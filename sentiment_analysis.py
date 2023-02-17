@@ -4,6 +4,12 @@ import re
 import nltk
 from nltk.stem import WordNetLemmatizer
 import streamlit as st
+from sklearn.svm import LinearSVC
+from sklearn.naive_bayes import BernoulliNB
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics import confusion_matrix, classification_report
 
 st.set_page_config(page_title="Sentiment Analysis", layout="wide")
 
