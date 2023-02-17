@@ -78,7 +78,7 @@ model = pickle.load(file)
 file.close()
 
 input = st.text_input('Text here: ')
-text = ["hello world"]
+text = [""]
 text.append(input)
 
 df = predict(vectoriser, model, text)
