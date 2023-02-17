@@ -18,7 +18,7 @@ st.markdown("""
 Made by Toktaganov Turlykhan BDA-2106
 """)
 
-def predict(vectoriser, model, text):
+def predict(vectoriser, model, tweet):
     processedText = []
 
     wordLemm = WordNetLemmatizer()
@@ -29,29 +29,28 @@ def predict(vectoriser, model, text):
     sequencePattern   = r"(.)\1\1+"
     seqReplacePattern = r"\1\1"
 
-    for tweet in text:
-        tweet = tweet.lower()
+    tweet = tweet.lower()
 
-        tweet = re.sub(urlPattern,' URL',tweet)
-        for emoji in emojis.keys():
-            tweet = tweet.replace(emoji, "EMOJI" + emojis[emoji])
-        tweet = re.sub(userPattern,' USER', tweet)
-        tweet = re.sub(alphaPattern, " ", tweet)
-        tweet = re.sub(sequencePattern, seqReplacePattern, tweet)
+    tweet = re.sub(urlPattern,' URL',tweet)
+    for emoji in emojis.keys():
+        tweet = tweet.replace(emoji, "EMOJI" + emojis[emoji])
+    tweet = re.sub(userPattern,' USER', tweet)
+    tweet = re.sub(alphaPattern, " ", tweet)
+    tweet = re.sub(sequencePattern, seqReplacePattern, tweet)
 
-        tweetwords = ''
-        for word in tweet.split():
-            if len(word)>1:
-                word = wordLemm.lemmatize(word)
-                tweetwords += (word+' ')
+    tweetwords = ''
+    for word in tweet.split():
+        if len(word)>1:
+            word = wordLemm.lemmatize(word)
+            tweetwords += (word+' ')
 
-        processedText.append(tweetwords)
+    processedText.append(tweetwords)
 
     textdata = vectoriser.transform(processedText)
     sentiment = model.predict(textdata)
 
     data = []
-    for text, pred in zip(text, sentiment):
+    for text, pred in zip(tweet, sentiment):
         data.append((text,pred))
 
     df = pd.DataFrame(data, columns = ['text','sentiment'])
@@ -77,9 +76,7 @@ file = open('model.pickle', 'rb')
 model = pickle.load(file)
 file.close()
 
-input = st.text_input('Text here: ')
-text = [""]
-text.append(input)
+text = st.text_input('Text here: ')
 
 df = predict(vectoriser, model, text)
 
